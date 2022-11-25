@@ -3,4 +3,5 @@ module.exports = {
   port: 8000,
   secretKey: 'keepitsimple',
   jwtExpiry: '6h',
+  debug: false,
 };
