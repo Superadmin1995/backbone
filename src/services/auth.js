@@ -38,13 +38,16 @@ module.exports = {
     return jwt.sign({ data }, config.secretKey, { expiresIn: config.jwtExpiry }).toString();
   },
 
-  async authenticate(token) {
-    const { data } = jwt.verify(token, config.secretKey);
-    const user = await UserModel.findById(data._id);
-    if (!user) {
-      throw new Error('invalid user');
+  async authenticate(bearerToken) {
+    const [ tokenType, token] = bearerToken.split(' ');
+    if (tokenType === 'Bearer') {
+      const { data } = jwt.verify(token, config.secretKey);
+      const user = await UserModel.findById(data._id);
+      if (user) {
+        const userObj = _.omit(user.toObject(), ['password']);
+        return userObj;
+      } 
     }
-    const userObj = _.omit(user.toObject(), ['password']);
-    return userObj;
+    throw new Error('Invalid User');
   },
 };
