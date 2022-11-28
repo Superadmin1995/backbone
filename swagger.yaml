@@ -7,6 +7,19 @@ servers:
     description: Local
 
 paths:
+  /api/ping:
+    get:
+      tags:
+        - Health Check
+      summary: Ping service
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
   /api/users/register:
     post:
       tags:
