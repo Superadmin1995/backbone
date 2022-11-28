@@ -1,21 +1,15 @@
 const mongoose = require('mongoose');
 const { mongoUrl } = require('../../config');
-const logger = require('./logger');
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-};
-
-mongoose.connect(mongoUrl, options);
+mongoose.connect(mongoUrl);
 
 mongoose.connection.on('open', () => {
   logger.debug('Connected to mongo server.');
 });
 
 mongoose.connection.on('error', (err) => {
-  logger.debug('Could not connect to mongo server!', err);
+  logger.error('Could not connect to mongo server!');
+  logger.error(err);
 });
 
 module.exports = mongoose;

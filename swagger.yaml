@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: backbone
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+    description: Local
+
+paths:
+  /api/ping:
+    get:
+      tags:
+        - Health Check
+      summary: Ping service
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
+  /api/users/register:
+    post:
+      tags:
+        - Users
+      summary: Register new User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: ramu23
+                email: ramu23@gmail.com
+                password: 'St0rnGP@SSW0rd'
+                mobile: '8123456789'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/login:
+    post:
+      tags:
+        - Users
+      summary: User Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: ramu23@gmail.com
+                password: St0rnGP@SSW0rd
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/me:
+    get:
+      tags:
+        - Users
+      summary: Authenticate User with token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/chords:
+    get:
+      tags:
+        - Chords
+      summary: Get Chords
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Chords
+      summary: Create Chord
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Real Madrid Fans
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+
+  /api/chords/{id}:
+    get:
+      tags:
+        - Chords
+      summary: Get Chord by Id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Chord Id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Enter your bearer token
