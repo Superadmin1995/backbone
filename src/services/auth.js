@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
@@ -30,23 +29,21 @@ module.exports = {
     return userObj;
   },
 
-  generateToken(user) {
-    const data = {
-      _id: user._id.toString(),
-      email: user.email,
+  generateToken(userDetails) {
+    const user = {
+      _id: userDetails._id.toString(),
+      email: userDetails.email,
     };
-    return jwt.sign({ data }, config.secretKey, { expiresIn: config.jwtExpiry }).toString();
+    return jwt.sign({ user }, config.secretKey, { expiresIn: config.jwtExpiry }).toString();
   },
 
   async authenticate(bearerToken) {
     const [ tokenType, token] = bearerToken.split(' ');
     if (tokenType === 'Bearer') {
-      const { data } = jwt.verify(token, config.secretKey);
-      const user = await UserModel.findById(data._id);
-      if (user) {
-        const userObj = _.omit(user.toObject(), ['password']);
-        return userObj;
-      } 
+      const { user } = jwt.verify(token, config.secretKey);
+      if (user?._id) {
+        return user;
+      }
     }
     throw new Error('Invalid User');
   },
