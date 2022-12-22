@@ -1,14 +1,20 @@
-const auth = require('../services/auth');
+const AuthService = require('../services/auth');
+const UserService =  require('../services/user');
 
 module.exports = {
-  me(req, res) {
+  auth(req, res) {
     res.send(req.user);
+  },
+
+  async me(req, res) {
+    const user = await UserService.getById(req.user._id);
+    res.send(user);
   },
 
   async register(req, res) {
     try {
-      const newUser = await auth.register(req.body);
-      newUser.token = auth.generateToken(newUser);
+      const newUser = await AuthService.register(req.body);
+      newUser.token = AuthService.generateToken(newUser);
       res.send(newUser);
     } catch (error) {
       res.status(400).send({ error });
@@ -18,7 +24,7 @@ module.exports = {
   async authenticate(req, res, next) {
     try {
       const token = req.header('Authorization');
-      req.user = await auth.authenticate(token);
+      req.user = await AuthService.authenticate(token);
       next();
     } catch (error) {
       res.status(401).send({ error });
@@ -27,8 +33,8 @@ module.exports = {
 
   async login(req, res) {
     try {
-      const user = await auth.login(req.body);
-      user.token = auth.generateToken(user);
+      const user = await AuthService.login(req.body);
+      user.token = AuthService.generateToken(user);
       res.send(user);
     } catch (error) {
       res.status(400).send({ error });
